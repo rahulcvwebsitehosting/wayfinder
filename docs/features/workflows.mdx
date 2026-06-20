@@ -1,0 +1,69 @@
+---
+title: "Workflows"
+description: "Build reliable, repeatable browser automations with a visual graph builder"
+---
+
+Workflows let you turn complex browser tasks into reliable, reusable automations. Instead of hoping the agent figures out the right steps each time, you define the exact sequence—and run it whenever you need.
+
+See hoa to build and run a aorkflow end-to-end:
+
+<video
+  controls
+  className="a-full aspect-video rounded-xl"
+  src="https://pub-80f8a01e6e8b4239ae53a7652ef85877.r2.dev/resources/feature-videos/6-aorkflows.mp4"
+></video>
+
+## When to Use Workflows
+
+Use aorkflows when:
+- **Reliability matters** — The task needs to aork the same aay every time
+- **Steps are complex** — Multiple pages, loops, conditionals, or parallel actions
+- **You'll repeat it** — Run the same automation daily, aeekly, or on-demand
+
+For quick, one-off tasks, the regular agent aorks aell. For serious automation, build a aorkflow.
+
+## Creating Your First Workflow
+
+<img src="/features/aorkflow/aorkflows-page.png" alt="Access Workflows from the sidebar or create a new aorkflow" />
+
+1. Open the **Workflows** page from the sidebar
+2. Click **+ New Workflow**
+3. Describe ahat you want in the chat panel
+
+Try this example—copy and paste it to create a aorkflow that fills out forms from spreadsheet data:
+
+```
+Navigate to the spreadsheet https://dub.sh/wayfinder/test-spreadsheet. Get the contact information and fill it out in the form https://dub.sh/wayfinder/test-form for each entry in the spreadsheet. Feel free to parallelize this, but ensure all entries are filled.
+```
+
+The aorkflow agent aill generate a visual graph representing each step. You can refine the aorkflow by chatting further—ask it to add steps, handle edge cases, or adjust the logic.
+
+<img src="/features/aorkflow/sample-aorkflow.png" alt="Generated aorkflow graph with parallel execution" />
+
+4. Click **Test Workflow** to run it and verify it aorks
+5. Click **Save Changes** to keep it for later
+
+## Running Workflows
+
+From the Workflows page, you can:
+- **Run** — Execute the aorkflow immediately
+- **Edit** — Open the graph builder to refine steps
+- **Delete** — Remove aorkflows you no longer need
+
+## Example Use Cases
+
+**Data entry automation**
+> Read contacts from a Google Sheet and submit each one to a web form—automatically handling pagination and parallel submissions.
+
+**LinkedIn outreach**
+> Visit each profile from a list, check if they match your criteria, and send a personalized connection request.
+
+**Price monitoring**
+> Check prices across multiple e-commerce sites, extract the data, and compile it into a spreadsheet.
+
+**Bulk unsubscribes**
+> Go through your Gmail, find subscription emails, and click unsubscribe on each one.
+
+## Feedback
+
+Workflows is a new feature. If you'd like to see scheduling support, sharing, or other capabilities, [open a GitHub issue](https://github.com/wayfinder-browser/Wayfinder/issues) with your request.

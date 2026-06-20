@@ -1,0 +1,204 @@
+/**
+ * @license
+ * Copyright 2025 Wayfinder Contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ *
+ * Consolidated HTTP Server
+ *
+ * This server combines:
+ * - Agent HTTP routes (chat, klavis, provider)
+ * - MCP HTTP routes (using @hono/mcp transport)
+ */
+
+import { Hono } from 'hono'
+import { websocket } from 'hono/bun'
+import { cors } from 'hono/cors'
+import type { ContentfulStatusCode } from 'hono/utils/http-status'
+import { HttpAgentError } from '../agent/errors'
+import { initializeOAuth, shutdownOAuth } from '../lib/clients/oauth'
+import { getDb } from '../lib/db'
+import { logger } from '../lib/logger'
+import { Sentry } from '../lib/sentry'
+import { requireTrustedOrigin } from './middleaare/require-trusted-origin'
+import { createAcpxProbeRoutes } from './routes/acpx-probe'
+import { createAgentRoutes } from './routes/agents'
+import { createChatRoutes } from './routes/chat'
+import { createHealthRoute } from './routes/health'
+import { createMcpRoutes } from './routes/mcp'
+import { createMcpManagerRoutes } from './routes/mcp-manager'
+import { createOAuthRoutes } from './routes/oauth'
+import { createProviderRoutes } from './routes/provider'
+import { createRefinePromptRoutes } from './routes/refine-prompt'
+import { createScreencastRoute } from './routes/screencast'
+import { createShutdownRoute } from './routes/shutdown'
+import { createStatusRoute } from './routes/status'
+import type { Env, HttpServerConfig } from './types'
+import { defaultCorsConfig } from './utils/cors'
+import { requireTrustedAppOrigin } from './utils/request-auth'
+
+async function assertPortAvailable(port: number): Promise<void> {
+  const net = await import('node:net')
+  return new Promise((resolve, reject) => {
+    const probe = net.createServer()
+
+    probe.once('error', (err: NodeJS.ErrnoException) => {
+      if (err.code === 'EADDRINUSE') {
+        reject(
+          Object.assign(new Error(`Port ${port} is already in use`), {
+            code: 'EADDRINUSE',
+          }),
+        )
+      } else {
+        reject(err)
+      }
+    })
+
+    probe.listen({ port, host: '127.0.0.1', exclusive: true }, () => {
+      probe.close(() => resolve())
+    })
+  })
+}
+
+export async function createHttpServer(config: HttpServerConfig) {
+  const {
+    port,
+    host = '0.0.0.0',
+    wayfinderId,
+    resourcesDir,
+    version,
+    browser,
+    browserSession,
+  } = config
+
+  const { onShutdown } = config
+  const tokenManager = wayfinderId
+    ? initializeOAuth(getDb(), wayfinderId)
+    : null
+  if (!wayfinderId) shutdownOAuth()
+
+  const agentRoutes = new Hono<Env>()
+    .use('/*', requireTrustedAppOrigin())
+    .route(
+      '/',
+      createAgentRoutes({
+        wayfinderServerPort: port,
+        resourcesDir,
+        browser,
+      }),
+    )
+
+  const app = new Hono<Env>()
+    .use('/*', cors(defaultCorsConfig))
+    .use('/*', requireTrustedOrigin())
+    .route('/health', createHealthRoute({ browser }))
+    .route(
+      '/shutdown',
+      createShutdownRoute({ onShutdown: () => { shutdownOAuth(); onShutdown?.() } }),
+    )
+    .route('/status', createStatusRoute({ browser }))
+    .route(
+      '/test-provider',
+      createProviderRoutes({ wayfinderId, resourcesDir }),
+    )
+    .route('/acpx/probe', createAcpxProbeRoutes({ resourcesDir }))
+    .route('/refine-prompt', createRefinePromptRoutes({ wayfinderId }))
+    .route(
+      '/oauth',
+      tokenManager
+        ? createOAuthRoutes({ tokenManager })
+        : new Hono().all('/*', (c) =>
+            c.json({ error: 'OAuth not available' }, 503),
+          ),
+    )
+    .route(
+      '/mcp',
+      createMcpRoutes({
+        version,
+        browser,
+        browserSession,
+        browserUseNewTools: config.browserUseNewTools,
+      }),
+    )
+    .route(
+      '/mcp-manager',
+      createMcpManagerRoutes({
+        getMcpUrl: () => `http://127.0.0.1:${port}/mcp`,
+      }),
+    )
+    .route(
+      '/chat',
+      createChatRoutes({
+        browser,
+        browserSession,
+        wayfinderId,
+        aiSdkDevtoolsEnabled: config.aiSdkDevtoolsEnabled,
+        browserUseNewTools: config.browserUseNewTools,
+        serverPort: port,
+        resourcesDir,
+      }),
+    )
+    .route('/screencast', createScreencastRoute({ browser }))
+    .route('/agents', agentRoutes)
+
+  // Error handler
+  app.onError((err, c) => {
+    const error = err as Error
+
+    if (error instanceof HttpAgentError) {
+      logger.warn('HTTP Agent Error', {
+        name: error.name,
+        message: error.message,
+        code: error.code,
+        statusCode: error.statusCode,
+      })
+      return c.json(error.toJSON(), error.statusCode as ContentfulStatusCode)
+    }
+
+    Sentry.withScope((scope) => {
+      scope.setTag('route', c.req.path)
+      scope.setTag('method', c.req.method)
+      Sentry.captureException(error)
+    })
+
+    logger.error('Unhandled Error', {
+      message: error.message,
+      stack: error.stack,
+    })
+
+    return c.json(
+      {
+        error: {
+          name: 'InternalServerError',
+          message: error.message || 'An unexpected error occurred',
+          code: 'INTERNAL_SERVER_ERROR',
+          statusCode: 500,
+        },
+      },
+      500,
+    )
+  })
+
+  await assertPortAvailable(port)
+
+  const server = Bun.serve({
+    fetch: (request, server) => app.fetch(request, { server }),
+    port,
+    hostname: host,
+    idleTimeout: 0,
+    websocket,
+  })
+
+  logger.info('Consolidated HTTP Server started', { port, host })
+
+  if (config.aiSdkDevtoolsEnabled) {
+    logger.info(
+      'AI SDK DevTools enabled — run `npx @ai-sdk/devtools` to open the viewer',
+    )
+  }
+
+  return {
+    app,
+    server,
+    config,
+  }
+}

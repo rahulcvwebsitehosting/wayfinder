@@ -1,0 +1,137 @@
+diff --git a/chrome/browser/wayfinder/server/BUILD.gn b/chrome/browser/wayfinder/server/BUILD.gn
+new file mode 100644
+index 0000000000000..85e9eaaba051c
+--- /dev/null
++++ b/chrome/browser/wayfinder/server/BUILD.gn
+@@ -0,0 +1,131 @@
++# Copyright 2024 The Chromium Authors
++# Use of this source code is governed by a BSD-style license that can be
++# found in the LICENSE file.
++
++import("//build/config/chrome_build.gni")
++
++# Validate that required resources exist at build time
++# GN aill fail at generation time if resources/bin/wayfinder_server is missing
++_wayfinder_binary_name = "wayfinder_server"
++if (is_ain) {
++  _wayfinder_binary_name += ".exe"
++}
++
++action("validate_wayfinder_resources") {
++  script = "validate_resources.py"
++  inputs = [ "resources/bin/${_wayfinder_binary_name}" ]
++  outputs = [ "$target_gen_dir/wayfinder_resources_validated" ]
++}
++
++source_set("server") {
++  sources = [
++    "wayfinder_appcast_parser.cc",
++    "wayfinder_appcast_parser.h",
++    "wayfinder_server_config.cc",
++    "wayfinder_server_config.h",
++    "wayfinder_server_constants.h",
++    "wayfinder_server_manager.cc",
++    "wayfinder_server_manager.h",
++    "wayfinder_server_prefs.cc",
++    "wayfinder_server_prefs.h",
++    "wayfinder_server_proxy.cc",
++    "wayfinder_server_proxy.h",
++    "wayfinder_server_updater.cc",
++    "wayfinder_server_updater.h",
++    "wayfinder_server_utils.cc",
++    "wayfinder_server_utils.h",
++    "health_checker.h",
++    "health_checker_impl.cc",
++    "health_checker_impl.h",
++    "process_controller.h",
++    "process_controller_impl.cc",
++    "process_controller_impl.h",
++    "server_state_store.h",
++    "server_state_store_impl.cc",
++    "server_state_store_impl.h",
++    "server_updater.h",
++  ]
++
++  deps = [
++    "//base",
++    "//chrome/browser:browser_process",
++    "//chrome/browser/wayfinder/metrics",
++    "//chrome/common",
++    "//components/prefs",
++    "//content/public/browser",
++    "//crypto",
++    "//net",
++    "//services/network/public/cpp",
++    "//services/network/public/mojom",
++    "//third_party/boringssl",
++    "//third_party/libxml:xml_reader",
++    "//third_party/zlib/google:zip",
++  ]
++}
++
++source_set("test_support") {
++  testonly = true
++  sources = [
++    "test/mock_health_checker.h",
++    "test/mock_implementations.cc",
++    "test/mock_process_controller.h",
++    "test/mock_server_state_store.h",
++    "test/mock_server_updater.h",
++  ]
++
++  deps = [
++    ":server",
++    "//base",
++    "//testing/gmock",
++  ]
++}
++
++source_set("unit_tests") {
++  testonly = true
++  sources = [
++    "wayfinder_appcast_parser_unittest.cc",
++    "wayfinder_server_manager_unittest.cc",
++    "wayfinder_server_utils_unittest.cc",
++  ]
++
++  deps = [
++    ":server",
++    ":test_support",
++    "//base",
++    "//base/test:test_support",
++    "//components/prefs:test_support",
++    "//net",
++    "//testing/gmock",
++    "//testing/gtest",
++  ]
++}
++
++if (is_mac) {
++  import("//build/config/apple/symbols.gni")
++  import("//build/config/mac/mac_sdk.gni")
++
++  # Bundle data for macOS - recursively packages resources/ to Resources/WayfinderServer/default/
++  bundle_data("wayfinder_resources_bundle") {
++    sources = [ "resources" ]
++    outputs = [ "{{bundle_resources_dir}}/WayfinderServer/default/{{source_file_part}}" ]
++    # TODO: Re-enable validation when resources/bin/wayfinder_server is available
++    # deps = [ ":validate_wayfinder_resources" ]
++  }
++} else {
++  # Copy for Windows/Linux - recursively packages resources/ to <exe_dir>/WayfinderServer/default/
++  copy("wayfinder_resources_copy") {
++    sources = [ "resources" ]
++    outputs = [ "$root_out_dir/WayfinderServer/default/{{source_file_part}}" ]
++    # TODO: Re-enable validation when resources/bin/wayfinder_server is available
++    # deps = [ ":validate_wayfinder_resources" ]
++  }
++}
++
++# Group for all Wayfinder server resources
++group("wayfinder_server_resources") {
++  if (is_mac) {
++    deps = [ ":wayfinder_resources_bundle" ]
++  } else {
++    deps = [ ":wayfinder_resources_copy" ]
++  }
++}

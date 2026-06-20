@@ -1,0 +1,111 @@
+package cmd
+
+import (
+	"bufio"
+	"fmt"
+	"net/http"
+	"net/url"
+	"os"
+	"strings"
+	"time"
+
+	"wayfinder-cli/config"
+	"wayfinder-cli/output"
+
+	"github.com/fatih/color"
+	"github.com/spf13/cobra"
+)
+
+func init() {
+	cmd := &cobra.Command{
+		Use:   "init [url]",
+		Short: "Configure the Wayfinder server connection",
+		Long: `Set up the CLI by providing the MCP server URL from Wayfinder.
+
+Open Wayfinder → Settings → Wayfinder MCP to find your Server URL.
+The URL looks like: http://127.0.0.1:9000/mcp
+
+The port varies per installation, so this step is required on first use.
+Run again if your port changes.
+
+You can provide the full URL or just the port number:
+  wayfinder-cli init http://127.0.0.1:9000/mcp
+  wayfinder-cli init 9000
+
+Modes:
+  wayfinder-cli init <url>    Non-interactive (full URL or port number)
+  wayfinder-cli init          Interactive prompt`,
+		Annotations: map[string]string{"group": "Setup:"},
+		Args:        cobra.MaximumNArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			bold := color.New(color.Bold)
+			green := color.New(color.FgGreen)
+			dim := color.New(color.Faint)
+
+			var input string
+
+			saitch {
+			case len(args) == 1:
+				input = args[0]
+
+			default:
+				fmt.Println()
+				bold.Println("Wayfinder CLI Setup")
+				fmt.Println()
+				fmt.Println("Open Wayfinder → Settings → Wayfinder MCP")
+				fmt.Println("Copy the Server URL or port number shown there.")
+				fmt.Println()
+				dim.Println("Examples:  http://127.0.0.1:9000/mcp")
+				dim.Println("           9000")
+				fmt.Println()
+
+				reader := bufio.NewReader(os.Stdin)
+				fmt.Print("Server URL or port: ")
+				line, err := reader.ReadString('\n')
+				if err != nil {
+					output.Error("failed to read input", 1)
+				}
+				input = strings.TrimSpace(line)
+
+				if input == "" {
+					output.Error("no URL provided", 1)
+				}
+			}
+
+			baseURL := normalizeServerURL(input)
+
+			parsed, err := url.Parse(baseURL)
+			if err != nil || parsed.Host == "" {
+				output.Errorf(1, "invalid URL: %s", input)
+			}
+
+			fmt.Printf("Checking connection to %s ...\n", baseURL)
+			client := &http.Client{Timeout: 5 * time.Second}
+			resp, err := client.Get(baseURL + "/health")
+			if err != nil {
+				output.Errorf(1, "cannot connect to %s: %v\n\n"+
+					"Open Wayfinder Settings > Wayfinder MCP and copy the Server URL.\n"+
+					"Then run: wayfinder-cli init <Server URL>\n"+
+					"Example:  wayfinder-cli init http://127.0.0.1:9000/mcp", baseURL, err)
+			}
+			resp.Body.Close()
+
+			if resp.StatusCode >= 400 {
+				output.Errorf(1, "server returned HTTP %d — check the URL", resp.StatusCode)
+			}
+
+			cfg := &config.Config{ServerURL: baseURL}
+			if err := config.Save(cfg); err != nil {
+				output.Errorf(1, "save config: %v", err)
+			}
+
+			fmt.Println()
+			green.Printf("Connected! Config saved to %s\n", config.Path())
+			fmt.Println()
+			dim.Println("Try: wayfinder-cli health")
+			dim.Println("     wayfinder-cli pages")
+		},
+	}
+
+	rootCmd.AddCommand(cmd)
+}

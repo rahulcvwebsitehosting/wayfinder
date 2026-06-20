@@ -1,0 +1,4 @@
+[submodule ".internal-docs"]
+	path = .internal-docs
+	url = git@github.com:wayfinder-browser/internal-docs.git
+	branch = main

@@ -1,0 +1,36 @@
+**/.DS_Store
+**.auctor/**
+.auctor.json
+.gcs_entries
+**/dmg
+**/env
+**/logs
+**/old-scripts
+
+# Python
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.egg-info/
+**/*.egg
+**/.pytest_cache/
+**/dist/
+**/releases/
+**/.arangler/
+**/node_modules/
+
+
+
+nxtscape-cli-access.json
+gclient.json
+.env
+.grove/
+AGENTS.md
+**/resources/binaries/
+
+packages/wayfinder/build/tools/
+
+# AI SDK DevTools traces
+.devtools/
+.omc/
+.llm/

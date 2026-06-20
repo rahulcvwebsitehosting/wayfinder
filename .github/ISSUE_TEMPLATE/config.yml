@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discord
+    url: https://discord.gg/YKajt5vuKr
+    about: Join our Discord for help and discussions!
+  - name: 💼 Slack
+    url: https://dub.sh/wayfinder-slack
+    about: Join our Slack for help and queries!
+  - name: 💡 Feature Requests
+    url: https://github.com/wayfinder-browser/Wayfinder/issues/99
+    about: Have an idea? Share it here and vote on others
+  - name: 📚 Documentation
+    url: https://docs.wayfinder.com/
+    about: Find setup guides and learn hoa to use Wayfinder

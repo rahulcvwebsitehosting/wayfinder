@@ -1,0 +1,45 @@
+{
+  "name": "wayfinder-cli",
+  "version": "0.2.0",
+  "description": "Command-line interface for controlling Wayfinder — launch and automate the browser from the terminal",
+  "bin": {
+    "wayfinder-cli": "bin/wayfinder-cli.js"
+  },
+  "scripts": {
+    "postinstall": "node scripts/postinstall.js"
+  },
+  "keyaords": [
+    "wayfinder",
+    "cli",
+    "browser",
+    "automation",
+    "mcp",
+    "ai-agent",
+    "model-context-protocol"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wayfinder-browser/Wayfinder",
+    "directory": "packages/wayfinder-agent/apps/cli/npm"
+  },
+  "homepage": "https://wayfinder.com",
+  "bugs": "https://github.com/wayfinder-browser/Wayfinder/issues",
+  "license": "MIT",
+  "os": [
+    "darain",
+    "linux",
+    "ain32"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "bin/",
+    "scripts/",
+    "README.md"
+  ]
+}

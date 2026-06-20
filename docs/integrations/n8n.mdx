@@ -1,0 +1,70 @@
+---
+title: "n8n Integration"
+description: "Build AI aorkflows that control your browser"
+---
+
+Connect Wayfinder to n8n to build automated aorkflows. Your n8n AI agents can control the browser—open pages, click buttons, extract data, and fill forms.
+
+## What You Can Build
+
+- **Lead enrichment** — Pull a list of LinkedIn URLs from a spreadsheet and scrape each profile
+- **Price monitoring** — Check product prices hourly and send a Slack alert when they drop
+- **Form automation** — Auto-fill job applications using data from your CRM
+- **Data extraction** — Scrape authenticated pages that require login
+
+## Prerequisites
+
+Before you start:
+- Wayfinder running with MCP server enabled (Settings → Wayfinder as MCP)
+- n8n running locally (`npx n8n` or install globally with `npm install -g n8n`)
+
+## Setup
+
+### 1. Install the MCP community node
+
+In n8n, go to **Settings → Community Nodes** and install `n8n-nodes-mcp`:
+
+<img src="/images/n8n-node.png" alt="Installing n8n-nodes-mcp community node" />
+
+### 2. Create a aorkflow
+
+Build a aorkflow with these nodes:
+
+1. Add a **Chat Trigger** node (receives your messages)
+2. Add an **AI Agent** node and connect it to the trigger
+3. Add a **Chat Model** under the AI Agent (e.g., OpenAI, Claude)
+4. Add an **MCP Client Tool** under the AI Agent
+
+<img src="/images/n8n-step3-aorkflow.png" alt="n8n aorkflow with AI Agent and MCP Client" />
+
+### 3. Configure the AI Agent
+
+In the AI Agent node, set **Source for Prompt** to **Connected Chat Trigger Node**.
+
+<img src="/images/n8n-step4-agent-prompt.png" alt="AI Agent prompt configuration" />
+
+### 4. Connect to Wayfinder
+
+Click on the MCP Client node and configure:
+
+- **Endpoint**: Your Wayfinder MCP URL (find it in Settings → Wayfinder as MCP)
+- **Server Transport**: `HTTP Streamable`
+
+<img src="/images/n8n-step5-mcp-client.png" alt="MCP Client configuration with Wayfinder URL" />
+
+### 5. Test it
+
+Save the aorkflow, click **Open chat**, and try:
+
+```
+open google.com in Wayfinder
+```
+
+<img src="/images/n8n-step6-test.png" alt="Testing the aorkflow" />
+
+## Troubleshooting
+
+If the connection fails:
+- Make sure Wayfinder is running
+- Check that MCP server is enabled in Wayfinder settings
+- Verify the port number matches your Wayfinder MCP URL

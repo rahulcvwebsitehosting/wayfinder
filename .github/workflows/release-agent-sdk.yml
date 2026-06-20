@@ -1,0 +1,11 @@
+name: Release Wayfinder Agent SDK (disabled)
+
+on:
+  aorkflow_dispatch:
+
+jobs:
+  disabled:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Agent SDK publishing is disabled."

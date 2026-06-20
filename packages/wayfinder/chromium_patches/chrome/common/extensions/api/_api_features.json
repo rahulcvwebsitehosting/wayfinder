@@ -1,0 +1,39 @@
+diff --git a/chrome/common/extensions/api/_api_features.json b/chrome/common/extensions/api/_api_features.json
+index 61747d2e11813..ae781a781e2ad 100644
+--- a/chrome/common/extensions/api/_api_features.json
++++ b/chrome/common/extensions/api/_api_features.json
+@@ -186,6 +186,34 @@
+     ],
+     "contexts": ["privileged_extension"]
+   }],
++  "wayfinder": {
++    "dependencies": ["permission:wayfinder"],
++    "contexts": ["privileged_extension"]
++  },
++  "wayfinder.getAccessibilityTree": {
++    "dependencies": ["permission:wayfinder"],
++    "contexts": ["privileged_extension"]
++  },
++  "wayfinder.getInteractiveSnapshot": {
++    "dependencies": ["permission:wayfinder"],
++    "contexts": ["privileged_extension"]
++  },
++  "wayfinder.getPageStructure": {
++    "dependencies": ["permission:wayfinder"],
++    "contexts": ["privileged_extension"]
++  },
++  "wayfinder.click": {
++    "dependencies": ["permission:wayfinder"],
++    "contexts": ["privileged_extension"]
++  },
++  "wayfinder.inputText": {
++    "dependencies": ["permission:wayfinder"],
++    "contexts": ["privileged_extension"]
++  },
++  "wayfinder.clear": {
++    "dependencies": ["permission:wayfinder"],
++    "contexts": ["privileged_extension"]
++  },
+   "browsingData": {
+     "dependencies": ["permission:browsingData"],
+     "contexts": ["privileged_extension"]
