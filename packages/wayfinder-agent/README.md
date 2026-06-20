@@ -1,6 +1,6 @@
 # Wayfinder Agent
 
-The agent platform powering [Wayfinder](https://github.com/wayfinder-browser/Wayfinder) — contains the MCP server, agent UI, CLI, and evaluation framework.
+The agent platform powering [Wayfinder](https://github.com/rahulcvwebsitehosting/wayfinder) — contains the MCP server, agent UI, CLI, and evaluation framework.
 
 ## Monorepo Structure
 

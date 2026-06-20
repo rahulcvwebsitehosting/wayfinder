@@ -10,6 +10,7 @@
 [![Go](https://img.shields.io/badge/Go-1.24-00ADD8?logo=go)](https://go.dev/)
 [![Bun](https://img.shields.io/badge/Bun-1.3-FBF0DF?logo=bun)](https://bun.sh/)
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python)](https://python.org)
+[![GitHub](https://img.shields.io/badge/GitHub-rahulcvwebsitehosting/wayfinder-181717?logo=github)](https://github.com/rahulcvwebsitehosting/wayfinder)
 
 </div>
 
@@ -115,16 +116,9 @@ flowchart LR
 
 ### 1. Download
 
-| Platform | File | Size |
-|----------|------|------|
-| **Windows** | `Wayfinder_x64_installer.exe` | ~190 MB |
-| **macOS (Intel)** | `Wayfinder_x64.dmg` | ~280 MB |
-| **macOS (Apple Silicon)** | `Wayfinder_arm64.dmg` | ~260 MB |
-| **macOS (Universal)** | `Wayfinder_universal.dmg` | ~500 MB |
-| **Linux** | `Wayfinder_x64.AppImage` | ~370 MB |
-| **Linux (Debian/Ubuntu)** | `Wayfinder_amd64.deb` | ~270 MB |
+> **No pre-built installer yet.** This repo contains the full source code. Pre-built binaries will be available on the [Releases page](https://github.com/rahulcvwebsitehosting/wayfinder/releases) once the first build is published.
 
-> **Latest release**: [Releases page](https://github.com/wayfinder-browser/wayfinder/releases)
+To build from source, see the [Development](#development) section below.
 
 ### 2. Import your Chrome data (optional)
 
@@ -214,10 +208,10 @@ Wayfinder exposes a **Model Context Protocol (MCP) server** so external AI codin
 Install with:
 ```bash
 # macOS / Linux
-curl -fsSL https://cdn.wayfinder.app/cli/install.sh | bash
+curl -fsSL https://github.com/rahulcvwebsitehosting/wayfinder/releases/latest/download/install.sh | bash
 
 # Windows PowerShell
-irm https://cdn.wayfinder.app/cli/install.ps1 | iex
+irm https://github.com/rahulcvwebsitehosting/wayfinder/releases/latest/download/install.ps1 | iex
 ```
 
 Then run `wayfinder-cli init` to link it to your browser.
@@ -397,8 +391,11 @@ wayfinder/
 
 ```bash
 # Clone the repo
-git clone https://github.com/wayfinder-browser/wayfinder.git
-cd wayfinder/packages/wayfinder-agent
+git clone https://github.com/rahulcvwebsitehosting/wayfinder.git
+cd wayfinder
+
+# Navigate to the agent platform
+cd packages/wayfinder-agent
 
 # Install dependencies
 bun install
@@ -442,23 +439,15 @@ wayfinder build \
 
 ## Downloading Pre-built Releases
 
-The easiest way to use Wayfinder is to download a pre-built installer from the [Releases page](https://github.com/wayfinder-browser/wayfinder/releases):
+Pre-built installers will be published on the [Releases page](https://github.com/rahulcvwebsitehosting/wayfinder/releases) once available. Each installer will include:
 
-| File | Platform |
-|------|----------|
-| `Wayfinder_x64_installer.exe` | Windows 10/11 (x64) |
-| `Wayfinder_x64.dmg` | macOS (Intel) |
-| `Wayfinder_arm64.dmg` | macOS (Apple Silicon M1/M2/M3/M4) |
-| `Wayfinder_universal.dmg` | macOS (both architectures) |
-| `Wayfinder_x64.AppImage` | Linux (x64) |
-| `Wayfinder_amd64.deb` | Linux Debian/Ubuntu |
-
-Each installer includes:
 - The full Wayfinder browser (Chromium 148)
 - The built-in AI agent engine
 - The MCP server
 - uBlock Origin with MV2 support
 - All pre-installed extensions
+
+In the meantime, you can run the agent platform directly without building Chromium (see [Development](#development)).
 
 ---
 
@@ -482,9 +471,9 @@ Each installer includes:
 
 Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
-- [Report a bug](https://github.com/wayfinder-browser/wayfinder/issues)
-- [Request a feature](https://github.com/wayfinder-browser/wayfinder/issues)
-- [Submit a pull request](https://github.com/wayfinder-browser/wayfinder/pulls)
+- [Report a bug](https://github.com/rahulcvwebsitehosting/wayfinder/issues/new)
+- [Request a feature](https://github.com/rahulcvwebsitehosting/wayfinder/issues/new)
+- [Submit a pull request](https://github.com/rahulcvwebsitehosting/wayfinder/compare)
 
 **Quick start for contributors:**
 ```bash
@@ -494,6 +483,8 @@ cd wayfinder/packages/wayfinder-agent
 bun install
 bun run dev:watch
 ```
+
+*Note: The issue tracker and releases are at [github.com/rahulcvwebsitehosting/wayfinder](https://github.com/rahulcvwebsitehosting/wayfinder).*
 
 ---
 
@@ -509,6 +500,6 @@ Wayfinder is built on [Chromium](https://www.chromium.org/) and incorporates pat
 
 Built with ❤️ by the Wayfinder community.
 
-[Get Started](#quick-start) · [Download](#download) · [Contribute](#contributing) · [Report Issue](https://github.com/wayfinder-browser/wayfinder/issues)
+[Get Started](#quick-start) · [Download](#download) · [Contribute](#contributing) · [Report Issue](https://github.com/rahulcvwebsitehosting/wayfinder/issues)
 
 </div>
