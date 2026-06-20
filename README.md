@@ -2,7 +2,7 @@
 
 # Wayfinder
 
-### The open-source, privacy-first AI browser that runs anywhere.
+### The open-source browser agent for local AI automation.
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![Chromium 148](https://img.shields.io/badge/Chromium-148-4777E6?logo=google-chrome)](https://www.chromium.org)
@@ -12,90 +12,55 @@
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python)](https://python.org)
 [![GitHub](https://img.shields.io/badge/GitHub-rahulcvwebsitehosting/wayfinder-181717?logo=github)](https://github.com/rahulcvwebsitehosting/wayfinder)
 
+**Wayfinder is an open-source, privacy-first browser agent powered by local AI models.**  
+Your data never leaves your machine. Your models run on your hardware. You stay in control.
+
+> **How local AI works:** The browser engine (Chromium) does not run LLMs internally. The agent layer — a Bun/TypeScript server running alongside the browser — connects to local model servers like Ollama or LM Studio via their APIs. The LLM handles planning and reasoning; the agent layer executes browser actions through Chrome DevTools Protocol. This means Wayfinder works with any model server you already run.
+
 </div>
 
 ---
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#6366F1', 'primaryTextColor': '#fff', 'primaryBorderColor': '#4f46e5', 'lineColor': '#6366F1', 'secondaryColor': '#1e1b4b', 'tertiaryColor': '#f5f3ff'}}}%%
-flowchart TB
-    User([You]) --> WAYFINDER
-    
-    subgraph WAYFINDER [Wayfinder Browser]
-        direction TB
-        CHROMIUM[Chromium 148 Engine] --> AGENT[AI Agent Engine]
-        CHROMIUM --> EXT[Extension System]
-        CHROMIUM --> MCP[MCP Server]
-        AGENT --> WORKFLOWS[Visual Workflows]
-        AGENT --> MEMORY[Persistent Memory]
-        AGENT --> SCHEDULE[Scheduled Tasks]
-        EXT --> WEB[Web Apps & Tabs]
-        MCP --> CLI[wayfinder-cli]
-        MCP --> CODE_AGENTS[Claude Code / Cursor / Gemini CLI]
-    end
-    
-    WAYFINDER --> PROVIDERS
-    
-    subgraph PROVIDERS [Bring Your Own AI]
-        CLAUDE[Claude - API Key]
-        OPENAI[OpenAI / GPT - API Key]
-        GEMINI[Gemini - API Key]
-        OLLAMA[Ollama - Local]
-        LMSTUDIO[LM Studio - Local]
-        AZURE[Azure OpenAI]
-        BEDROCK[AWS Bedrock]
-        OPENROUTER[OpenRouter]
-        CHATGPT[ChatGPT Pro - OAuth]
-        COPILOT[GitHub Copilot - OAuth]
-        QWEN[Qwen Code - OAuth]
-    end
-    
-    WAYFINDER --> APPS
-    
-    subgraph APPS [Integrations]
-        GMAIL[Gmail]
-        SLACK[Slack]
-        GITHUB[GitHub]
-        LINEAR[Linear]
-        NOTION[Notion]
-        FIGMA[Figma]
-        SALESFORCE[Salesforce]
-        MORE[40+ MCP Apps]
-    end
+### How it works
 
-    style WAYFINDER fill:#6366F1,color:#fff
-    style User fill:#1e1b4b,color:#fff
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#6366F1', 'primaryTextColor': '#fff', 'primaryBorderColor': '#4f46e5', 'lineColor': '#6366F1', 'secondaryColor': '#312e81', 'tertiaryColor': '#e0e7ff'}}}%%
+flowchart LR
+    YOU([You]) --> WAY["Wayfinder
+Agent"]
+    WAY --> LOCAL["Local LLM
+(Ollama / LM Studio)"]
+    WAY --> CLOUD["Cloud LLM
+(Claude / GPT / Gemini)"]
+    LOCAL --> PLAN[Planner]
+    CLOUD --> PLAN
+    PLAN --> BROWSER[Browser Action]
+    BROWSER --> SITES[Websites]
+    BROWSER --> RESULT[Result]
+    RESULT --> YOU
+    
+    style YOU fill:#312e81,color:#fff
+    style WAY fill:#6366F1,color:#fff
+    style LOCAL fill:#4f46e5,color:#fff
+    style CLOUD fill:#818cf8,color:#fff
+    style PLAN fill:#6366F1,color:#fff
+    style BROWSER fill:#6366F1,color:#fff
 ```
 
 ---
 
-## What is Wayfinder?
+## Why Wayfinder?
 
-Wayfinder is a **full-featured web browser** (based on Chromium 148) with a built-in **AI agent engine**. It can browse the web, interact with sites, extract data, fill forms, and automate workflows — all through natural language conversation. Your data and API keys stay on your machine.
+Wayfinder is not a closed AI product — it's an **open-source platform** that puts you in full control:
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#6366F1', 'primaryTextColor': '#fff', 'primaryBorderColor': '#4f46e5', 'lineColor': '#a5b4fc', 'secondaryColor': '#1e1b4b', 'tertiaryColor': '#f5f3ff'}}}%%
-flowchart LR
-    subgraph YOU [You Control Everything]
-        KEYS[Your API Keys]
-        DATA[Your Data]
-        LOCAL[Local Models]
-    end
-    
-    subgraph NOT [Never Leaves Your Machine]
-        BROWSER[Wayfinder Browser]
-        AGENT_ENGINE[AI Agent Engine]
-        FILES[Your Files]
-    end
-    
-    KEYS --> AGENT_ENGINE
-    LOCAL --> AGENT_ENGINE
-    AGENT_ENGINE --> BROWSER
-    BROWSER --> DATA
-    
-    style YOU fill:#1e1b4b,color:#fff
-    style NOT fill:#6366F1,color:#fff
-```
+| Advantage | Why it matters |
+|-----------|---------------|
+| **Open Source** (AGPL-3.0) | Audit every line of code. No black boxes. No hidden telemetry. |
+| **Local Models First** | Run Ollama, LM Studio, or any local LLM. The agent layer connects to your model server — no dependency on cloud APIs. |
+| **Privacy-First** | Your API keys, browsing data, and conversations stay on your machine. Zero data collection. |
+| **Self-Hostable** | Deploy the agent server on your own infrastructure. Full autonomy. |
+| **Bring Your Own Key** | Use any LLM provider — local or cloud. You choose. |
+| **No Vendor Lock-In** | Swap models anytime. No subscriptions, no contracts, no forced upgrades. |
 
 ---
 
@@ -263,23 +228,35 @@ Run agents on autopilot:
 
 Side-panel tab management that keeps you organized even with 100+ tabs open.
 
+### 🧩 Extension Management & MV2 Support
+
+Wayfinder supports all Chrome extensions out of the box, but unlike Chrome, we **actively preserve Manifest V2** — including full uBlock Origin with advanced blocking capabilities that Google's MV3 API restricts.
+
+**How to install extensions:**
+- **Chrome Web Store** — Browse and install directly from the Chrome Web Store
+- **Sideload CRX files** — Load unpacked extensions from disk via `chrome://extensions` in developer mode
+- **Pre-installed bundles** — uBlock Origin ships with every build; additional bundled extensions are managed through Wayfinder's built-in extension manager in Settings
+
+> **Why MV2 matters:** Google's Manifest V3 deprecates `webRequest` blocking, which powers real ad blockers, privacy tools, and security extensions. By maintaining MV2 support, Wayfinder ensures these tools continue working without compromise.
+
 ---
 
 ## How It Compares
 
-| | Wayfinder | Chrome | Brave | Comet | Atlas |
-|---|:---:|:---:|:---:|:---:|:---:|
-| Open Source | ✅ | ❌ | ✅ | ❌ | ❌ |
-| AI Agent | ✅ | ❌ | ❌ | ✅ | ✅ |
-| MCP Server | ✅ | ❌ | ❌ | ❌ | ❌ |
-| Visual Workflows | ✅ | ❌ | ❌ | ❌ | ❌ |
-| Cowork (files + browser) | ✅ | ❌ | ❌ | ❌ | ❌ |
-| Scheduled Tasks | ✅ | ❌ | ❌ | ❌ | ❌ |
-| Bring Your Own Keys | ✅ | ❌ | ✅ | ❌ | ❌ |
-| Local Models (Ollama) | ✅ | ❌ | ✅ | ❌ | ❌ |
-| Local-first Privacy | ✅ | ❌ | ✅ | ❌ | ❌ |
-| Ad Blocking (MV2) | ✅ | ❌ | ✅ | ✅ | ❌ |
-| Chrome Extension Compat | ✅ | ✅ | ✅ | ✅ | ✅ |
+| | Wayfinder | Chrome | Brave |
+|---|:---:|:---:|:---:|
+| **Open Source** | ✅ | ❌ | ✅ |
+| **Local Models First** | ✅ | ❌ | ❌ |
+| **Privacy-First** | ✅ | ❌ | ✅ |
+| **Self-Hostable** | ✅ | ❌ | ❌ |
+| Built-in AI Agent | ✅ | ❌ | ❌ |
+| MCP Server | ✅ | ❌ | ❌ |
+| Visual Workflows | ✅ | ❌ | ❌ |
+| Bring Your Own Keys | ✅ | ❌ | ✅ |
+| Ad Blocking (MV2) | ✅ | ❌ | ✅ |
+| Chrome Extension Compat | ✅ | ✅ | ✅ |
+
+**Key takeaway:** Wayfinder is the only open-source browser agent purpose-built for local AI — you keep your data, you choose your models, you own the stack.
 
 ---
 
@@ -437,6 +414,27 @@ wayfinder build \
 
 ---
 
+## Chromium Maintenance & Update Strategy
+
+Forking Chromium is a long-term commitment. Here's how Wayfinder manages it:
+
+**Patch system:** All changes to Chromium live in `chromium_patches/` as structured patch files organized by feature layer. Patches are applied deterministically by the build CLI on top of a clean Chromium checkout — no permanent fork branch to maintain.
+
+**Rebase strategy:**
+- Each Wayfinder release pins a specific Chromium tag (e.g., `148.0.7778.97`)
+- When rebasing to a newer Chromium version, patches are reapplied via the build system
+- Patch conflicts are surfaced at apply time, not buried in merge commits
+- The `series_patches` module handles upstream patches (ungoogled-chromium, etc.) separately from Wayfinder-specific patches, making conflict resolution easier
+
+**Update cadence:**
+- **Security patches:** Chromium releases critical security fixes monthly. Each new Chromium tag is evaluated for inclusion.
+- **Feature updates:** Major Chromium versions are adopted when the upstream improvements align with Wayfinder's roadmap.
+- **Extension compatibility:** Chromium's extension API changes are monitored to ensure existing patches remain compatible.
+
+**Risk acknowledgment:** Maintaining a Chromium fork means staying on top of every CVE, API deprecation, and build system change. This is a known cost of providing a truly independent browser. Contributions and community testing are essential to keeping the fork healthy.
+
+---
+
 ## Downloading Pre-built Releases
 
 Pre-built installers will be published on the [Releases page](https://github.com/rahulcvwebsitehosting/wayfinder/releases) once available. Each installer will include:
@@ -453,17 +451,19 @@ In the meantime, you can run the agent platform directly without building Chromi
 
 ## FAQ
 
-**Do I need an API key?** Yes. Wayfinder does not include a built-in LLM. You bring your own API key from Anthropic, OpenAI, Google, or run local models with Ollama.
+**Can I run Wayfinder entirely offline with local models?** Yes. Connect Ollama or LM Studio and you never need an internet connection for AI — just for the websites you browse.
 
-**Is my data sent to any server?** No. Your API keys and data stay on your machine. The only network requests are to the AI provider you explicitly configure and to the websites you visit.
+**Is Wayfinder truly open source?** Yes, AGPL-3.0. Every line of code is public. No proprietary components, no hidden telemetry, no backdoors.
+
+**How is this different from Browser Use or OpenAI Operator?** Those are cloud-dependent SaaS products. Wayfinder is a self-hostable, open-source browser agent that runs on your own hardware with your own models.
+
+**Do I need an API key?** Only if you use cloud providers. With local models (Ollama, LM Studio), no API key is needed.
+
+**Is my data sent to any server?** No. Your API keys, browsing data, and conversations stay on your machine. Network requests are local to your LLM or to the websites you visit.
 
 **Can I use Chrome extensions?** Yes. Wayfinder is a Chromium fork and supports all Chrome extensions. uBlock Origin is pre-installed with Manifest V2 support.
 
-**Does it work with Claude Code?** Yes. Wayfinder runs an MCP server that Claude Code, Gemini CLI, Cursor, and any MCP client can connect to.
-
-**How is this different from the Chrome built-in AI?** Chrome's built-in AI is a small on-device language model. Wayfinder connects to full-power models (Claude, GPT-4o, Gemini) with complete browsing automation.
-
-**Can I run it headlessly?** Yes. Wayfinder supports headless mode for automated workflows and CI pipelines. Use `wayfinder-cli` to launch in headless mode.
+**Can I run Wayfinder headlessly?** Yes. Supports headless mode for automated workflows and CI pipelines. Use `wayfinder-cli` to launch in headless mode.
 
 ---
 
@@ -498,7 +498,7 @@ Wayfinder is built on [Chromium](https://www.chromium.org/) and incorporates pat
 
 <div align="center">
 
-Built with ❤️ by the Wayfinder community.
+**The open-source browser agent for local AI automation.**
 
 [Get Started](#quick-start) · [Download](#download) · [Contribute](#contributing) · [Report Issue](https://github.com/rahulcvwebsitehosting/wayfinder/issues)
 
